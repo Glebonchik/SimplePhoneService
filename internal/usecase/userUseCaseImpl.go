@@ -32,3 +32,9 @@ func (uc *UserUseCase) UpdateUser(id uint64, user *domain.User) error {
 func (uc *UserUseCase) PrintUsers() {
 	uc.repo.Print()
 }
+
+func (uc *UserUseCase) FindUserByPhone(phone string) (domain.User, error) {
+	var user domain.User
+	user, err := uc.repo.FindUserByPhone(phone)
+	return user, err
+}

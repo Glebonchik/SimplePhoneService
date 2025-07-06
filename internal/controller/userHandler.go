@@ -30,6 +30,17 @@ func (uh *UserHandler) Register(c *gin.Context) {
 		return
 	}
 
+	_, err := uh.useCase.FindUserByPhone(user.Contacts.PhoneNumber)
+
+	if err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "User already exists"})
+		return
+	}
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	if err := uh.useCase.Register(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
