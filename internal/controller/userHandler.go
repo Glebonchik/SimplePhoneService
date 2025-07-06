@@ -96,6 +96,13 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
+	_, err = uh.useCase.FindUserByPhone(user.Contacts.PhoneNumber)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
 	if err := uh.useCase.UpdateUser(id, &user); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
